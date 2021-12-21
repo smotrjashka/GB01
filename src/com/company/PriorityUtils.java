@@ -1,51 +1,36 @@
 package com.company;
 
+import java.util.*;
+
 public class PriorityUtils {
 
+    public static int findFirstBreakedIndex(List<Character> signStackSimulator, int signStackIndx) {
 
-    public static int findFirstBreakedIndex(char[] signStackSimulator, int signStackIndx) {
+        List<Character> subList = signStackSimulator.subList(0, signStackIndx+1);
+        return subList.lastIndexOf('(');
 
-        for (int i = signStackIndx; i >= 0; i--){
-            if(signStackSimulator[i] == '(')
-                return i;
-        }
-        //but if we assume that we work with correct data we wouldnt be here
-        return -1;
     }
 
-    public static char findPreviousSign(char[] signStackSimulator, int signStackIndx) {
+    public static char findPreviousSign(List<Character> signStackSimulator, int signStackIndx) {
         if (signStackIndx == 0){
             return ' ';
         }
-        for (int i = signStackIndx-1; i>=0 ;i--){
-            if (signStackSimulator[i] != ' '){
-                return signStackSimulator[i];
-            }
-        }
-        //if we emptied all stack
-        return ' ';
+        //here I trimmed previously entry set -> we not need any check just return prev or ' ' if not any prev
+
+        return signStackSimulator.get(signStackIndx-1);
     }
 
-    public static int findPreviousSignIndex(char[] signStackSimulator, int signStackIndx) {
-        if (signStackIndx == 0){
-            return -2;
-        }
-        for (int i = signStackIndx-1; i>=0 ;i--){
-            if (signStackSimulator[i] != ' '){
-                return i;
-            }
-        }
-        //if we emptied all stack
-        return -1;
+    public static int findPreviousSignIndex(List<Character> signStackSimulator, int signStackIndx) {
+        return signStackIndx-=1;
     }
 
     ///we would return diff beatween new and prev operand (like in comparator function)
-    public static int checkPriorityForNewAndPreviousOperands(char[] signStackSimulator, int newSignStackIndx) {
+    public static int checkPriorityForNewAndPreviousOperands(List<Character> signStackSimulator, int newSignStackIndx) {
         if (newSignStackIndx == 0){
             return 100;    //TODO
         } else{
-            int newOperadPriority = SignPrioritized.getPriorityNumberForSign(signStackSimulator[newSignStackIndx]);
-            int prevOperadPriority = SignPrioritized.getPriorityNumberForSign(signStackSimulator[newSignStackIndx-1]);
+            int newOperadPriority = SignPrioritized.getPriorityNumberForSign(signStackSimulator.get(newSignStackIndx));
+            int prevOperadPriority = SignPrioritized.getPriorityNumberForSign(signStackSimulator.get(newSignStackIndx-1));
             return newOperadPriority-prevOperadPriority;
         }
     }

@@ -1,21 +1,23 @@
 package com.company;
 
+import java.util.List;
+
 import static com.company.DigitUtils.isNextDigit;
 import static com.company.PriorityUtils.*;
 
 public class StackUtils {
 
-    public static String processDigit(char currentChar, int i, String inputString, long[] digitStackSimulator,
+    public static String processDigit(char currentChar, int i, String inputString, List<Long> digitStackSimulator,
                                       int doubleStackIndex){
-        String entireDigitCandidate = "" + currentChar;
+        StringBuilder entireDigitCandidate = new StringBuilder("" + currentChar);
         while(isNextDigit(i, inputString)){
             //I would ignore string builder alert because of "simplicity" of used functions
-            entireDigitCandidate+=inputString.charAt(++i);
+            entireDigitCandidate.append(inputString.charAt(++i));
             System.out.println("" + entireDigitCandidate);
         }
         /// here I suppose that we write correct expression because wiki say that is part of "polish expression" ideology
-        long entireDigit = Long.parseLong(entireDigitCandidate);
-        digitStackSimulator[doubleStackIndex] = entireDigit;
+        long entireDigit = Long.parseLong(entireDigitCandidate.toString());
+        digitStackSimulator.set(doubleStackIndex, entireDigit);
         return (entireDigit + " ");
     }
 
@@ -29,7 +31,7 @@ public class StackUtils {
         }
     }
 
-    public static String checkCurrentResultForStartBreket(char currentChar, char[] signStackSimulator, int signStackIndx){
+    public static String checkCurrentResultForStartBreket(char currentChar, List<Character> signStackSimulator, int signStackIndx){
         String additionForPolish = "";
         if (currentChar != '(') {
             int priorityDiff = checkPriorityForNewAndPreviousOperands(signStackSimulator, signStackIndx);
@@ -41,7 +43,7 @@ public class StackUtils {
                 ///remove sign from stack
                 int prevSignIndex = findPreviousSignIndex(signStackSimulator, signStackIndx);
                 if (prevSignIndex >= 0) {
-                    signStackSimulator[prevSignIndex] = ' ';
+                    signStackSimulator.set(prevSignIndex, ' ');
                 }
             }
         }

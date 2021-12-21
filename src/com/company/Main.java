@@ -1,5 +1,7 @@
 package com.company;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import static com.company.DigitUtils.*;
@@ -16,38 +18,27 @@ public class Main {
         System.out.println("please write you mathematical expression here:");
         /// in my version I only use + - * / ^ ( )
 
-        // here normally i would use trim but as I am not sure which function I can use and which not
-        // just for do not do it 2 times I will manually detect and eliminate the whitespaces
-        //and I know that all written belove is along to be more efficient way but task itself about old structural way...
-
         Scanner in = new Scanner(System.in);
 
-        String inputString = in.nextLine();
-        String polishBlaBlaBlaThings = "";
+        String inputString = in.nextLine().replace(' ', '\u0000');
+        System.out.println("after remove all spaces:{" + inputString + "}");
+        StringBuilder polishBlaBlaBlaThings = new StringBuilder();
 
         System.out.println("your entered:" + inputString);
 
-        ///also I would use in normal real life regexp, but n real code we can use already written functions at all
-        double result = 0;
-        ///some I will use list or maybe hash map but I not sure what structures exactly I can use thats why I will use array
-        char[] signStackSimulator = new char[inputString.length()];
-        long[] digitStackSimulator = new long[inputString.length()];
+         double result = 0;
+        List<Character> signStackSimulator = new ArrayList<>(inputString.length())
+        List<Long> digitStackSimulator = new ArrayList<>(inputString.length());
 
         int signStackIndx = 0;
         int doubleStackIndex = 0;
-        int i = 0;
-        while ( i < inputString.length()){
+        for(int i = 0; i < inputString.length();){
 
             char currentChar = inputString.charAt(i);
 
-            if (currentChar == ' '){
-                i++;
-                continue;
-            }
-
             if (isDigit(currentChar)){
 
-                polishBlaBlaBlaThings += processDigit(currentChar, i, inputString, digitStackSimulator, doubleStackIndex);
+                polishBlaBlaBlaThings.append(processDigit(currentChar, i, inputString, digitStackSimulator, doubleStackIndex));
                 doubleStackIndex++;
 
             } else {
@@ -55,7 +46,7 @@ public class Main {
                 if (currentChar != ')') {
 
                     signStackSimulator[signStackIndx] = currentChar;
-                    polishBlaBlaBlaThings += checkCurrentResultForStartBreket(currentChar, signStackSimulator, signStackIndx);
+                    polishBlaBlaBlaThings.append(checkCurrentResultForStartBreket(currentChar, signStackSimulator, signStackIndx));
                     signStackIndx++;
 
                 } else {
@@ -65,7 +56,7 @@ public class Main {
                     for (firstBreaketIndx++; firstBreaketIndx<=signStackIndx; firstBreaketIndx++){
                         //we wouldnt have second condition but just in case
                         if (signStackSimulator[firstBreaketIndx]!=' ' && signStackSimulator[firstBreaketIndx] != '\u0000'){
-                            polishBlaBlaBlaThings += (signStackSimulator[firstBreaketIndx] + " ");
+                            polishBlaBlaBlaThings.append(signStackSimulator[firstBreaketIndx]).append(" ");
                             signStackSimulator[firstBreaketIndx] = ' ';
                         }
                     }
@@ -76,10 +67,10 @@ public class Main {
 
         }
 
-        for (int i1 = 0; i1 < signStackSimulator.length; i1++) {
+        for (int i1 = 0; i1 < signStackSimulator.size(); i1++) {
             /// \u0000 is an empty inizialized char in array
-            if (signStackSimulator[i1] != ' ' && signStackSimulator[i1] != '\u0000'){
-                polishBlaBlaBlaThings += (signStackSimulator[i1] + " ");
+            if (!signStackSimulator.get(i1).equals(' ') && !signStackSimulator.get(i1).equals('\u0000')){
+                polishBlaBlaBlaThings.append(signStackSimulator[i1]).append(" ");
             }
         }
 
@@ -87,12 +78,12 @@ public class Main {
 
         double finalResult = 0;
         try {
-            finalResult = resultCount(polishBlaBlaBlaThings);
+            finalResult = resultCount(polishBlaBlaBlaThings.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        polishBlaBlaBlaThings += finalResultRounded(finalResult);
+        polishBlaBlaBlaThings.append(finalResultRounded(finalResult));
 
         System.out.println("polish result:");
         System.out.println(polishBlaBlaBlaThings);
