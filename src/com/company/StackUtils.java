@@ -6,15 +6,6 @@ import static com.company.PriorityUtils.*;
 
 public class StackUtils {
 
-    public static String processDigit(char currentChar, int i, String inputString, List<Long> digitStackSimulator,
-                                      int doubleStackIndex){
-        inputString = inputString.substring(i).replaceFirst("[^0-9].*", "");
-        /// here I suppose that we write correct expression because wiki say that is part of "polish expression" ideology
-        long entireDigit = Long.parseLong(inputString);
-        digitStackSimulator.set(doubleStackIndex, entireDigit);
-        return inputString;
-    }
-
     public static String finalResultRounded(double finalResult){
         if ((finalResult == Math.floor(finalResult)) && !Double.isInfinite(finalResult)) {
             //if we have integer value

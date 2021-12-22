@@ -6,8 +6,7 @@ public class PriorityUtils {
 
     public static int findFirstBreakedIndex(List<Character> signStackSimulator, int signStackIndx) {
 
-        List<Character> subList = signStackSimulator.subList(0, signStackIndx+1);
-        return subList.lastIndexOf('(');
+        return signStackSimulator.lastIndexOf('(');
 
     }
 

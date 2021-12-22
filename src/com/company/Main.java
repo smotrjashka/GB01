@@ -20,37 +20,58 @@ public class Main {
 
         Scanner in = new Scanner(System.in);
 
-        String inputString = in.nextLine().replace(' ', '\u0000');
-        System.out.println("after remove all spaces:{" + inputString + "}");
+        String inputString = in.nextLine().replace(" ", "");
         StringBuilder polishBlaBlaBlaThings = new StringBuilder();
 
         System.out.println("your entered:" + inputString);
 
-         double result = 0;
         List<Character> signStackSimulator = new ArrayList<>(inputString.length());
-        List<Long> digitStackSimulator = new ArrayList<>(inputString.length());
+        ArrayList<Long> digitStackSimulator = new ArrayList<>(inputString.length());
 
         int signStackIndx = 0;
-        int doubleStackIndex = 0;
-        for(int i = 0; i < inputString.length();){
+
+        for(int i = 0; i < inputString.length(); i++){
 
             char currentChar = inputString.charAt(i);
 
+            System.out.println("i="+i+" char=" + currentChar);
+
             if (isDigit(currentChar)){
 
-                polishBlaBlaBlaThings.append(processDigit(currentChar, i, inputString, digitStackSimulator, doubleStackIndex));
-                doubleStackIndex++;
+                String inputStringS = inputString.substring(i).replaceFirst("[^0-9].*", "");
+                /// here I suppose that we write correct expression because wiki say that is part of "polish expression" ideology
+
+                long entireDigit = Long.parseLong(inputStringS);
+                digitStackSimulator.add(entireDigit);
+                polishBlaBlaBlaThings.append(inputStringS).append(" ");
 
             } else {
 
                 if (currentChar != ')') {
 
-                    signStackSimulator.set(signStackIndx, currentChar);
-                    polishBlaBlaBlaThings.append(checkCurrentResultForStartBreket(currentChar, signStackSimulator, signStackIndx));
-                    signStackIndx++;
+                    signStackSimulator.add(currentChar);
+
+                    if (currentChar != '(') {
+                        int priorityDiff = checkPriorityForNewAndPreviousOperands(signStackSimulator, signStackIndx);
+                        if (priorityDiff <= 0) {
+                            char prevSign = findPreviousSign(signStackSimulator, signStackIndx);
+                            if (prevSign != ' ') {
+                                polishBlaBlaBlaThings.append(prevSign).append(" ");
+                                int prevSignIndex = signStackSimulator.lastIndexOf(prevSign) - 1;
+
+                                ///remove sign from stack
+                                if (prevSignIndex >= 0) {
+                                    signStackSimulator.set(prevSignIndex, currentChar);
+                                    signStackSimulator.remove(prevSignIndex + 1);
+                                }
+                            }
+                        }
+                    } else {
+                        signStackIndx++;
+                    }
 
                 } else {
-
+                    System.out.println("end breaket");
                     int firstBreaketIndx = findFirstBreakedIndex(signStackSimulator, signStackIndx);
                     signStackSimulator.set(firstBreaketIndx, ' ');
                     for (firstBreaketIndx++; firstBreaketIndx<=signStackIndx; firstBreaketIndx++){
@@ -63,7 +84,6 @@ public class Main {
 
                 }
             }
-            i++;
 
         }
 
@@ -86,7 +106,7 @@ public class Main {
 
         polishBlaBlaBlaThings.append(finalResultRounded(finalResult));
 
-        System.out.println("polish result:");
+        System.out.println("Polish result:");
         System.out.println(polishBlaBlaBlaThings);
 
     }

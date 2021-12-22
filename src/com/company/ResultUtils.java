@@ -16,14 +16,16 @@ public class ResultUtils {
         int digitIndx = -1;
         ArrayList<String> splited = new ArrayList<>();
         Collections.addAll(splited, polishBlaBlaBlaThings.split(" "));
+        System.out.println("polish{" +polishBlaBlaBlaThings + "}");
         for (String element : splited) {
+            System.out.println("step {" + element + "}");
             if (isDigit(element)) {
-                finalDigitPool.set(++digitIndx, Double.parseDouble(element));
+                finalDigitPool.add(Double.parseDouble(element));
+                digitIndx++;
             } else {
 
                 try {
-                    finalDigitPool.set(digitIndx - 1, findSignByString(element.charAt(0))
-                            .applySign(finalDigitPool.get(digitIndx - 1), finalDigitPool.get(digitIndx)));
+                    finalDigitPool.set(digitIndx - 1, findSignByString(element.charAt(0)).applySign(finalDigitPool.get(digitIndx - 1), finalDigitPool.get(digitIndx)));
                     finalDigitPool.remove(digitIndx--);
                 } catch (ArithmeticException ex) {
                     ex.printStackTrace();
@@ -41,7 +43,8 @@ public class ResultUtils {
     }
 
    private static PureSign findSignByString(Character signString) throws Exception {
-       Map<Character, PureSign> map = Map.of('+', new AdditionSign(),
+       Map<Character, PureSign> map = Map.of(
+               '+', new AdditionSign(),
                '-', new SubstrSign(),
                '*', new MultiSign(),
                '/', new DivSign(),
