@@ -1,6 +1,7 @@
 package com.company;
 
 import java.util.EnumSet;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public enum SignPrioritized {
     END_BREACKET(')', Priority.ABOVE_A_SUSPICION),  //after I change my mind about algorithm and not use this now
@@ -24,16 +25,27 @@ public enum SignPrioritized {
     private static EnumSet<SignPrioritized> allSigns = EnumSet.allOf(SignPrioritized.class);
 
     public static int getPriorityNumberForSign(char signCandidate){
-        for (SignPrioritized signPrioritized : allSigns){
+        AtomicInteger priority = new AtomicInteger(-1);
+        allSigns.forEach(signPrioritized -> {
             if (signCandidate == signPrioritized.sign){
-                return signPrioritized.priority.getPriority();
+                priority.set(signPrioritized.priority.getPriority());
             }
-        }
+        });
 
         //for sign that not added normally we wouldnt be here
         //unless someone forgot to add new sign for our "calculator"
         /// maybe better to throw exception... I dont know
-        return -1;
+        return priority.get();
+    }
+
+    public static SignPrioritized getValueByChar(char signCandidate){
+        final SignPrioritized[] sign = new SignPrioritized[1];
+        allSigns.forEach(signPrioritized -> {
+            if (signPrioritized.sign == signCandidate){
+                sign[0] = signPrioritized;
+            }
+        });
+        return sign[0];
     }
 
     public char getSign() {

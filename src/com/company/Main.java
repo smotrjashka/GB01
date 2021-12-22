@@ -27,7 +27,7 @@ public class Main {
         System.out.println("your entered:" + inputString);
 
          double result = 0;
-        List<Character> signStackSimulator = new ArrayList<>(inputString.length())
+        List<Character> signStackSimulator = new ArrayList<>(inputString.length());
         List<Long> digitStackSimulator = new ArrayList<>(inputString.length());
 
         int signStackIndx = 0;
@@ -45,19 +45,19 @@ public class Main {
 
                 if (currentChar != ')') {
 
-                    signStackSimulator[signStackIndx] = currentChar;
+                    signStackSimulator.set(signStackIndx, currentChar);
                     polishBlaBlaBlaThings.append(checkCurrentResultForStartBreket(currentChar, signStackSimulator, signStackIndx));
                     signStackIndx++;
 
                 } else {
 
                     int firstBreaketIndx = findFirstBreakedIndex(signStackSimulator, signStackIndx);
-                    signStackSimulator[firstBreaketIndx] = ' ';
+                    signStackSimulator.set(firstBreaketIndx, ' ');
                     for (firstBreaketIndx++; firstBreaketIndx<=signStackIndx; firstBreaketIndx++){
                         //we wouldnt have second condition but just in case
-                        if (signStackSimulator[firstBreaketIndx]!=' ' && signStackSimulator[firstBreaketIndx] != '\u0000'){
-                            polishBlaBlaBlaThings.append(signStackSimulator[firstBreaketIndx]).append(" ");
-                            signStackSimulator[firstBreaketIndx] = ' ';
+                        if (!signStackSimulator.get(firstBreaketIndx).equals(' ') && !signStackSimulator.get(firstBreaketIndx).equals('\u0000')){
+                            polishBlaBlaBlaThings.append(signStackSimulator.get(firstBreaketIndx)).append(" ");
+                            signStackSimulator.set(firstBreaketIndx, ' ');
                         }
                     }
 
@@ -67,12 +67,13 @@ public class Main {
 
         }
 
-        for (int i1 = 0; i1 < signStackSimulator.size(); i1++) {
+
+        signStackSimulator.forEach( c -> {
             /// \u0000 is an empty inizialized char in array
-            if (!signStackSimulator.get(i1).equals(' ') && !signStackSimulator.get(i1).equals('\u0000')){
-                polishBlaBlaBlaThings.append(signStackSimulator[i1]).append(" ");
+            if (!c.equals(' ') && !c.equals('\u0000')) {
+                polishBlaBlaBlaThings.append(c).append(" ");
             }
-        }
+        });
 
         System.out.println("go to count result:");
 

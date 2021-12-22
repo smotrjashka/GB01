@@ -2,65 +2,58 @@ package com.company;
 
 import com.company.signs.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
+
 import static com.company.DigitUtils.isDigit;
 
 public class ResultUtils {
 
     public static double resultCount(String polishBlaBlaBlaThings) throws Exception {
-        double[] finalDigitPool = new double[polishBlaBlaBlaThings.length()/2];
+        ArrayList<Double> finalDigitPool = new ArrayList<>(polishBlaBlaBlaThings.length()/2 + 1);
         int digitIndx = -1;
-        while (polishBlaBlaBlaThings.contains(" ")){
-            int indxFirstOfSpace = polishBlaBlaBlaThings.indexOf(" ");
-            String element = polishBlaBlaBlaThings.substring(0, indxFirstOfSpace);
-            System.out.println("element " + element);
-            polishBlaBlaBlaThings = polishBlaBlaBlaThings.substring(indxFirstOfSpace+1);
-            System.out.println("rest of the line {" + polishBlaBlaBlaThings + "}");
-
-            if (isDigit(element)){
-                finalDigitPool[++digitIndx] = Double.parseDouble(element);
+        ArrayList<String> splited = new ArrayList<>();
+        Collections.addAll(splited, polishBlaBlaBlaThings.split(" "));
+        for (String element : splited) {
+            if (isDigit(element)) {
+                finalDigitPool.set(++digitIndx, Double.parseDouble(element));
             } else {
 
-                PureSign signByString = null;
                 try {
-                    signByString = findSignByString(element);
+                    finalDigitPool.set(digitIndx - 1, findSignByString(element.charAt(0))
+                            .applySign(finalDigitPool.get(digitIndx - 1), finalDigitPool.get(digitIndx)));
+                    finalDigitPool.remove(digitIndx--);
+                } catch (ArithmeticException ex) {
+                    ex.printStackTrace();
+                    throw new Exception("Division by zero!");
                 } catch (Exception e) {
                     e.printStackTrace();
                     throw new Exception("problem with sign");
                 }
 
-                finalDigitPool[digitIndx-1] = signByString.applySign(finalDigitPool[digitIndx-1], finalDigitPool[digitIndx]);
-                finalDigitPool[digitIndx--] = 0.0;
             }
 
         }
 
-        return finalDigitPool[0];
+        return finalDigitPool.get(0);
     }
 
-   private static PureSign findSignByString(String signString) throws Exception {
-        PureSign pureSign;
-       switch (signString){
-           case "+":
-               pureSign = new AdditionSign();
-               break;
-           case "-":
-               pureSign = new SubstrSign();
-               break;
-           case "*":
-               pureSign = new MultiSign();
-               break;
-           case "/":
-               pureSign = new DivSign();
-               break;
-           case "^":
-               pureSign = new PowerSign();
-               break;
-           default:
-               throw new Exception("poblem with sign!!");
+   private static PureSign findSignByString(Character signString) throws Exception {
+       Map<Character, PureSign> map = Map.of('+', new AdditionSign(),
+               '-', new SubstrSign(),
+               '*', new MultiSign(),
+               '/', new DivSign(),
+               '^', new PowerSign()
+               );
 
+       if (map.containsKey(signString)) {
+          return map.get(signString);
        }
 
-       return pureSign;
+        throw new Exception("poblem with sign!!");
+
    }
 
 }

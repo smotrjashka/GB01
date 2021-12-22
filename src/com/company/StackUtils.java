@@ -2,23 +2,17 @@ package com.company;
 
 import java.util.List;
 
-import static com.company.DigitUtils.isNextDigit;
 import static com.company.PriorityUtils.*;
 
 public class StackUtils {
 
     public static String processDigit(char currentChar, int i, String inputString, List<Long> digitStackSimulator,
                                       int doubleStackIndex){
-        StringBuilder entireDigitCandidate = new StringBuilder("" + currentChar);
-        while(isNextDigit(i, inputString)){
-            //I would ignore string builder alert because of "simplicity" of used functions
-            entireDigitCandidate.append(inputString.charAt(++i));
-            System.out.println("" + entireDigitCandidate);
-        }
+        inputString = inputString.substring(i).replaceFirst("[^0-9].*", "");
         /// here I suppose that we write correct expression because wiki say that is part of "polish expression" ideology
-        long entireDigit = Long.parseLong(entireDigitCandidate.toString());
+        long entireDigit = Long.parseLong(inputString);
         digitStackSimulator.set(doubleStackIndex, entireDigit);
-        return (entireDigit + " ");
+        return inputString;
     }
 
     public static String finalResultRounded(double finalResult){
@@ -39,11 +33,12 @@ public class StackUtils {
                 char prevSign = findPreviousSign(signStackSimulator, signStackIndx);
                 if (prevSign != ' ') {
                     additionForPolish = (prevSign + " ");
-                }
-                ///remove sign from stack
-                int prevSignIndex = findPreviousSignIndex(signStackSimulator, signStackIndx);
-                if (prevSignIndex >= 0) {
-                    signStackSimulator.set(prevSignIndex, ' ');
+
+                    ///remove sign from stack
+                    int prevSignIndex = signStackIndx - 1;
+                    if (prevSignIndex >= 0) {
+                        signStackSimulator.remove(prevSignIndex);
+                    }
                 }
             }
         }

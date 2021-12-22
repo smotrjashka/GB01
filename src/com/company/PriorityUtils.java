@@ -20,10 +20,6 @@ public class PriorityUtils {
         return signStackSimulator.get(signStackIndx-1);
     }
 
-    public static int findPreviousSignIndex(List<Character> signStackSimulator, int signStackIndx) {
-        return signStackIndx-=1;
-    }
-
     ///we would return diff beatween new and prev operand (like in comparator function)
     public static int checkPriorityForNewAndPreviousOperands(List<Character> signStackSimulator, int newSignStackIndx) {
         if (newSignStackIndx == 0){
