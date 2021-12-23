@@ -64,10 +64,6 @@ public class Checker {
             return character.equals('(') || character.equals(')');
         });
 
-        if (onlyBreakets.filter(c -> c.equals('(')).count() != onlyBreakets.filter(c -> c.equals(')')).count()){
-            return false;
-        }
-
-        return true;
+        return onlyBreakets.filter(c -> c.equals('(')).count() == onlyBreakets.filter(c -> c.equals(')')).count();
     }
 }
