@@ -25,7 +25,17 @@ public class ResultUtils {
             } else {
 
                 try {
-                    finalDigitPool.set(digitIndx - 1, findSignByString(element.charAt(0)).applySign(finalDigitPool.get(digitIndx - 1), finalDigitPool.get(digitIndx)));
+                    Map<Character, PureSign> map = Map.of(
+                            '+', new AdditionSign(),
+                            '-', new SubstrSign(),
+                            '*', new MultiSign(),
+                            '/', new DivSign(),
+                            '^', new PowerSign()
+                    );
+
+
+
+                    finalDigitPool.set(digitIndx - 1, map.get(element.charAt(0)).applySign(finalDigitPool.get(digitIndx - 1), finalDigitPool.get(digitIndx)));
                     finalDigitPool.remove(digitIndx--);
                 } catch (ArithmeticException ex) {
                     ex.printStackTrace();
@@ -42,21 +52,5 @@ public class ResultUtils {
         return finalDigitPool.get(0);
     }
 
-   private static PureSign findSignByString(Character signString) throws Exception {
-       Map<Character, PureSign> map = Map.of(
-               '+', new AdditionSign(),
-               '-', new SubstrSign(),
-               '*', new MultiSign(),
-               '/', new DivSign(),
-               '^', new PowerSign()
-               );
-
-       if (map.containsKey(signString)) {
-          return map.get(signString);
-       }
-
-        throw new Exception("poblem with sign!!");
-
-   }
 
 }

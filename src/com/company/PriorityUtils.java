@@ -4,29 +4,32 @@ import java.util.*;
 
 public class PriorityUtils {
 
-    public static int findFirstBreakedIndex(List<Character> signStackSimulator, int signStackIndx) {
+    private static Map<Character, Priority> priorityMap = Map.of('^', Priority.NORMAL, '*', Priority.LOW, '/', Priority.LOW,
+            '+', Priority.LOWEST, '-', Priority.LOWEST);
 
-        return signStackSimulator.lastIndexOf('(');
-
-    }
-
-    public static char findPreviousSign(List<Character> signStackSimulator, int signStackIndx) {
-        if (signStackIndx == 0){
-            return ' ';
-        }
-        //here I trimmed previously entry set -> we not need any check just return prev or ' ' if not any prev
-
-        return signStackSimulator.get(signStackIndx-1);
+    public static Priority getPriorityForSign(Character signChar){
+        return priorityMap.get(signChar);
     }
 
     ///we would return diff beatween new and prev operand (like in comparator function)
-    public static int checkPriorityForNewAndPreviousOperands(List<Character> signStackSimulator, int newSignStackIndx) {
-        if (newSignStackIndx == 0){
-            return 100;    //TODO
+    public static int checkPriorityForNewAndPreviousOperands(Character newSign, Character prevSign) {
+        if (newSign.equals(prevSign)){
+            return 0;
         } else{
-            int newOperadPriority = SignPrioritized.getPriorityNumberForSign(signStackSimulator.get(newSignStackIndx));
-            int prevOperadPriority = SignPrioritized.getPriorityNumberForSign(signStackSimulator.get(newSignStackIndx-1));
+            int newOperadPriority = priorityMap.get(newSign).getPriority();
+            int prevOperadPriority = priorityMap.get(prevSign).getPriority();
             return newOperadPriority-prevOperadPriority;
+        }
+    }
+
+
+    public static String finalResultRounded(double finalResult){
+        if ((finalResult == Math.floor(finalResult)) && !Double.isInfinite(finalResult)) {
+            //if we have integer value
+            return  "" + ((int) finalResult);
+        } else {
+            //I opt not to round to integer if we have result that is a double value
+            return  "" + finalResult;
         }
     }
 

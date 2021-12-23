@@ -1,11 +1,10 @@
 package com.company.signs;
 
 import com.company.PureSign;
-import com.company.SignPrioritized;
 
 public class PowerSign extends PureSign {
     public PowerSign() {
-        super(SignPrioritized.POWER_SIGN);
+        super('*');
     }
 
     @Override

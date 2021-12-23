@@ -1,19 +1,15 @@
 package com.company;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import static com.company.DigitUtils.*;
 import static com.company.PriorityUtils.*;
 import static com.company.ResultUtils.resultCount;
-import static com.company.StackUtils.*;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        System.out.println("Hello, this is my implementation of useless program");
         System.out.println("please use enter after you finish your expression");
         System.out.println("please write you mathematical expression here:");
         /// in my version I only use + - * / ^ ( )
@@ -28,6 +24,7 @@ public class Main {
         List<Character> signStackSimulator = new ArrayList<>(inputString.length());
         ArrayList<Long> digitStackSimulator = new ArrayList<>(inputString.length());
 
+        //первый незанятый индекс
         int signStackIndx = 0;
 
         for(int i = 0; i < inputString.length(); i++){
@@ -47,40 +44,42 @@ public class Main {
 
             } else {
 
+                System.out.println("sign is coming! polish now={" + polishBlaBlaBlaThings + "}");
+                System.out.println("sign stack before:{" + Arrays.toString(signStackSimulator.toArray()) + "}");
+
                 if (currentChar != ')') {
+                    System.out.println("not end brecket");
 
-                    signStackSimulator.add(currentChar);
+                    //signStackSimulator.add(currentChar);
 
-                    if (currentChar != '(') {
-                        int priorityDiff = checkPriorityForNewAndPreviousOperands(signStackSimulator, signStackIndx);
+                    if (currentChar != '(' && signStackIndx>1) {
+                        Character prevSign = signStackSimulator.get(signStackIndx-1);
+                        int priorityDiff = checkPriorityForNewAndPreviousOperands(currentChar, prevSign);
                         if (priorityDiff <= 0) {
-                            char prevSign = findPreviousSign(signStackSimulator, signStackIndx);
-                            if (prevSign != ' ') {
                                 polishBlaBlaBlaThings.append(prevSign).append(" ");
-                                int prevSignIndex = signStackSimulator.lastIndexOf(prevSign) - 1;
-
-                                ///remove sign from stack
-                                if (prevSignIndex >= 0) {
-                                    signStackSimulator.set(prevSignIndex, currentChar);
-                                    signStackSimulator.remove(prevSignIndex + 1);
-                                }
-                            }
+                                    signStackSimulator.set(signStackIndx-1, currentChar);
+                                    signStackSimulator.remove(signStackIndx);
+                        } else {
+                            signStackSimulator.add(currentChar);
+                            signStackIndx++;
                         }
                     } else {
+                        System.out.println("start breaket ");
+                        signStackSimulator.add(currentChar);
                         signStackIndx++;
+
                     }
 
                 } else {
                     System.out.println("end breaket");
-                    int firstBreaketIndx = findFirstBreakedIndex(signStackSimulator, signStackIndx);
+                    int firstBreaketIndx = signStackSimulator.lastIndexOf('(');
                     signStackSimulator.set(firstBreaketIndx, ' ');
-                    for (firstBreaketIndx++; firstBreaketIndx<=signStackIndx; firstBreaketIndx++){
-                        //we wouldnt have second condition but just in case
-                        if (!signStackSimulator.get(firstBreaketIndx).equals(' ') && !signStackSimulator.get(firstBreaketIndx).equals('\u0000')){
-                            polishBlaBlaBlaThings.append(signStackSimulator.get(firstBreaketIndx)).append(" ");
-                            signStackSimulator.set(firstBreaketIndx, ' ');
-                        }
+                    for (int j = signStackSimulator.size()-1; j>firstBreaketIndx; j--){
+                            polishBlaBlaBlaThings.append(signStackSimulator.get(j)).append(" ");
+                            signStackSimulator.remove(j);
                     }
+                    signStackSimulator.remove(firstBreaketIndx);
+                    signStackIndx = firstBreaketIndx;
 
                 }
             }
@@ -88,9 +87,9 @@ public class Main {
         }
 
 
+        // push for rest
         signStackSimulator.forEach( c -> {
-            /// \u0000 is an empty inizialized char in array
-            if (!c.equals(' ') && !c.equals('\u0000')) {
+            if (!c.equals(' ') ) {
                 polishBlaBlaBlaThings.append(c).append(" ");
             }
         });
