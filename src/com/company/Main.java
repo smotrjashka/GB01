@@ -17,6 +17,10 @@ public class Main {
         Scanner in = new Scanner(System.in);
 
         String inputString = in.nextLine().replace(" ", "");
+        while (!Checker.checkInput(inputString)){
+            System.out.println("You typed wrong line, please type correct one:");
+            inputString = in.nextLine().replace(" ", "");
+        }
         StringBuilder polishBlaBlaBlaThings = new StringBuilder();
 
         List<Character> signStackSimulator = new ArrayList<>(inputString.length());
