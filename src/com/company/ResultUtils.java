@@ -10,44 +10,40 @@ import static com.company.DigitUtils.isDigit;
 
 public class ResultUtils {
 
+    static final Map<Character, PureSign> map = Map.of(
+            '+', new AdditionSign(),
+            '-', new SubstrSign(),
+            '*', new MultiSign(),
+            '/', new DivSign(),
+            '^', new PowerSign()
+    );
+
     public static double resultCount(String polishBlaBlaBlaThings) throws Exception {
         ArrayList<Double> finalDigitPool = new ArrayList<>(polishBlaBlaBlaThings.length()/2 + 1);
-        int digitIndx = -1;
+        final int[] digitIndx = {-1};
         ArrayList<String> splited = new ArrayList<>();
         Collections.addAll(splited, polishBlaBlaBlaThings.split(" "));
-        System.out.println("polish{" +polishBlaBlaBlaThings + "}");
-        for (String element : splited) {
-            System.out.println("step {" + element + "}");
+        splited.forEach(element -> {
             if (isDigit(element)) {
                 finalDigitPool.add(Double.parseDouble(element));
-                digitIndx++;
+                digitIndx[0]++;
             } else {
 
                 try {
-                    Map<Character, PureSign> map = Map.of(
-                            '+', new AdditionSign(),
-                            '-', new SubstrSign(),
-                            '*', new MultiSign(),
-                            '/', new DivSign(),
-                            '^', new PowerSign()
-                    );
-
-
-
-                    finalDigitPool.set(digitIndx - 1,
-                            map.get(element.charAt(0)).applySign(finalDigitPool.get(digitIndx - 1), finalDigitPool.get(digitIndx)));
-                    finalDigitPool.remove(digitIndx--);
+                    finalDigitPool.set(digitIndx[0] - 1,
+                            map.get(element.charAt(0)).applySign(finalDigitPool.get(digitIndx[0] - 1), finalDigitPool.get(digitIndx[0])));
+                    finalDigitPool.remove(digitIndx[0]--);
                 } catch (ArithmeticException ex) {
                     ex.printStackTrace();
-                    throw new Exception("Division by zero!");
+                    System.out.println("Division by zero!");
                 } catch (Exception e) {
                     e.printStackTrace();
-                    throw new Exception("problem with sign");
+                    System.out.println("problem with sign");
                 }
 
             }
 
-        }
+        });
 
         return finalDigitPool.get(0);
     }

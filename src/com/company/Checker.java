@@ -1,6 +1,7 @@
 package com.company;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class Checker {
     public static boolean checkInput(String inputString){
@@ -36,6 +37,36 @@ public class Checker {
 
        }
 
+
+        return true;
+    }
+
+    private boolean checkCkreange(String inputString){
+
+        boolean resultBoolean = true;
+
+        List<Character> artificial = new ArrayList<>();
+        for (char c : inputString.toCharArray()) {
+            artificial.add(c);
+        }
+
+        if(artificial.stream().anyMatch(c -> ((c<48||c>57)&&!c.equals('(')&&!c.equals(')')
+                &&!c.equals('*')&&!c.equals('/')&&!c.equals('+')&&!c.equals('-')&&!c.equals('^')))){
+            return false;
+        }
+
+        long numbersAmount = artificial.stream().filter(c -> (c>=48&&c<=57)).count();
+        if (artificial.size() - numbersAmount > numbersAmount){
+            return false;
+        }
+
+        Stream<Character> onlyBreakets = artificial.stream().filter(character -> {
+            return character.equals('(') || character.equals(')');
+        });
+
+        if (onlyBreakets.filter(c -> c.equals('(')).count() != onlyBreakets.filter(c -> c.equals(')')).count()){
+            return false;
+        }
 
         return true;
     }
