@@ -3,7 +3,6 @@ package com.company;
 import com.company.signs.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
@@ -35,7 +34,8 @@ public class ResultUtils {
 
 
 
-                    finalDigitPool.set(digitIndx - 1, map.get(element.charAt(0)).applySign(finalDigitPool.get(digitIndx - 1), finalDigitPool.get(digitIndx)));
+                    finalDigitPool.set(digitIndx - 1,
+                            map.get(element.charAt(0)).applySign(finalDigitPool.get(digitIndx - 1), finalDigitPool.get(digitIndx)));
                     finalDigitPool.remove(digitIndx--);
                 } catch (ArithmeticException ex) {
                     ex.printStackTrace();
